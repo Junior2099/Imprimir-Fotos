@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imprimir Fotos</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://img.icons8.com/?size=100&id=10338&format=png&color=000000"
+    />
+    <style>
+      .rotate-btn {
+        background-color: #00c;
+        color: #fff;
+        border: none;
+        padding: 5px;
+        margin-right: 50px;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+
+      .rotate-btn:hover {
+        background-color: #008;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        font-weight: 300;
+        text-align: center;
+        padding: 30px;
+        background-color: #f8f9fa;
+      }
+      .hover-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        display: none;
+      }
+      .drag-over {
+        border: 2px dashed #198754 !important;
+        background-color: rgba(25, 135, 84, 0.1);
+      }
+
+      .dragging {
+        opacity: 0.5;
+      }
+      .container {
+        max-width: 3600px;
+        height: auto;
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: #0d6efd;
+        margin-bottom: 30px;
+        font-weight: 700;
+      }
+
+      p {
+        font-size: 1.2rem;
+        color: #6c757d;
+        margin-bottom: 30px;
+      }
+
+      .layout-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 842px;
+        height: 595px;
+        position: relative;
+        border: 1px solid #ddd;
+      }
+
+      .photo-slot {
+        position: absolute;
+        border: 2px dashed #0d6efd;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .photo-slot img {
+        max-width: 100%;
+        max-height: 100%;
+        display: none;
+      }
+
+      select {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      .btn {
+        border: 2px solid #0d6efd;
+        color: #0d6efd;
+        background-color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        background-color: #0d6efd;
+        color: white;
+      }
+
+      .btn-success {
+        border-color: #198754;
+        color: #198754;
+      }
+
+      .btn-success:hover {
+        background-color: #198754;
+        color: white;
+      }
+
+      .btn-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+      }
+
+      .btn-warning:hover {
+        background-color: #ffc107;
+        color: black;
+      }
+
+      #photoCount {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        color: #0d6efd;
+      }
+
+      .actions-container {
+        margin: 20px 0;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 8px;
+      }
+
+      .dropdown-content button {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      .dropdown-content button:hover {
+        background-color: #f1f1f1;
+      }
+
+      .show {
+        display: block;
+      }
+
+      .saving .photo-slot {
+        border: none !important;
+      }
+
+      .saving .photo-slot span {
+        display: none !important;
+      }
+
+      .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .hover-container {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: none;
+      }
+
+      .remove-btn {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .adjust-btn {
+        background-color: #00c;
+        color: #fff;
+        border: none;
+        padding: 5px;
+        margin-right: 5px;
+        cursor: pointer;
+        border-radius: 3px;
+        text-align: center;
+      }
+
+      .adjust-btn:hover {
+        background-color: #008;
+      }
+
+      .clickable {
+        cursor: pointer;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>IMPRIMIR FOTOS</h1>
+      <p>
+        Escolha o tamanho das fotos para visualizar como elas serão organizadas
+        na folha A4
+      </p>
+      <div class="btn-success" id="opcoes">
+        <button class="btn">30x20 - (1)</button>
+        <button class="btn">20x25 - (1)</button>
+        <button class="btn">13x18 - (2)</button>
+        <button class="btn">10x15 - (2)</button>
+        <button class="btn">9x15 - (4)</button>
+        <button class="btn">8x6 - (9)</button>
+      </div>
+
+      <div class="upload-btn-wrapper">
+        <input
+          type="file"
+          id="photoInput"
+          accept="image/*"
+          multiple
+          class="d-none"
+        />
+
+        <button class="btn" onclick="clearPhotos()">Limpar Fotos</button>
+      </div>
+      <div id="photoCount"></div>
+      <div class="actions-container">
+        <div class="dropdown" style="display: inline-block">
+          <button class="btn btn-success" onclick="toggleDropdown()">
+            Salvar Como
+          </button>
+          <div id="saveDropdown" class="dropdown-content">
+            <button onclick="salvarjpg()">Salvar como JPG</button>
+          </div>
+        </div>
+      </div>
+      <div class="layout-container" id="layoutContainer"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+document.querySelectorAll('#opcoes .btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const sizeText = button.textContent.trim();
+    let size;
+    
+    if (sizeText.includes('30x20')) {
+      size = '30x20';
+    } else if (sizeText.includes('8x6')) {
+      size = '8x6';
+    } else {
+      size = sizeText.split('-')[0].trim();
+    }
+    
+    createLayout(size);
+  });
+});
+
+const layouts = {
+  '30x20': [{ x: 0, y: 0, width: 842, height: 595 }],
+  '20x25': [{ x: 75, y: 45, width: 700, height: 500 }],
+  '13x18': [
+    { x: 25, y: 20, width: 380, height: 550 },                   
+    { x: 440, y: 20, width: 380, height: 550 }
+  ],
+  '10x15': [
+    { x: 90, y: 80, width: 300, height: 430 },
+    { x: 441, y: 80, width: 300, height: 430 }
+  ],
+  '9x15': [
+    { x: 30, y: 20, width: 385, height: 268 },
+    { x: 30, y: 300, width: 385, height: 268 },
+    { x: 430, y: 20, width: 385, height: 268 },
+    { x: 430, y: 300, width: 385, height: 268 }
+  ],
+  '8x6': Array.from({ length: 9 }, (_, i) => ({
+    x: 51 + Math.floor(i / 3) * 260,
+    y: 47.5 + (i % 3) * 170,
+    width: 235,
+    height: 155
+  }))
+};
+
+let currentLayout = null;
+
+function initializeEventListeners() {
+  document.querySelectorAll('#opcoes .btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const size = button.textContent.trim().split('-')[0].trim();
+      createLayout(size);
+    });
+  });
+
+  document.getElementById('photoInput').addEventListener('change', handleFileInput);
+  
+  window.onclick = handleOutsideClick;
+}
+
+function createLayout(size) {
+  const container = document.getElementById('layoutContainer');
+  container.innerHTML = '';
+  currentLayout = size;
+  
+  layouts[size].forEach((slot, index) => {
+    const div = createPhotoSlot(slot, index);
+    container.appendChild(div);
+  });
+  
+  updatePhotoCount();
+}
+
+function createPhotoSlot(slot, index) {
+  const div = document.createElement('div');
+  div.className = 'photo-slot';
+  Object.assign(div.style, {
+    left: slot.x + 'px',
+    top: slot.y + 'px',
+    width: slot.width + 'px',
+    height: slot.height + 'px'
+  });
+
+  div.innerHTML = `
+    <span class="clickable">Arraste a foto aqui ou<br>Clique para adicionar</span>
+    <input type="file" class="file-input" accept="image/*" style="display: none;" />
+    <img src="" alt="Photo ${index + 1}" />
+    <div class="hover-container">
+      <button class="adjust-btn">⛶</button>
+      <button class="rotate-btn">⟲</button>
+      <button class="remove-btn">×</button>
+    </div>
+  `;
+  
+  div.setAttribute('data-index', index);
+  setupDragAndDrop(div);
+  setupHoverEffects(div);
+  setupFileInput(div);
+  return div;
+}
+
+function handleFileInput(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(processFile);
+}
+
+function processFile(file) {
+  if (!file.type.startsWith('image/')) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const emptySlot = findEmptySlot();
+    if (emptySlot) {
+      loadImageIntoSlot(emptySlot, e.target.result);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function findEmptySlot() {
+  return Array.from(document.querySelectorAll('.photo-slot'))
+    .find(slot => !slot.querySelector('img').src);
+}
+
+function loadImageIntoSlot(slot, imageData) {
+  const img = slot.querySelector('img');
+  img.src = imageData;
+  
+  const tempImg = new Image();
+  tempImg.src = imageData;
+  tempImg.onload = () => fitImageToSlot(slot, img, tempImg);
+}
+
+function fitImageToSlot(slot, img, tempImg) {
+  const adjustToFrame = img.dataset.adjustToFrame === 'true';
+
+  if (adjustToFrame) {
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+  } else {
+    const slotRatio = slot.offsetWidth / slot.offsetHeight;
+    const imgRatio = tempImg.width / tempImg.height;
+
+    if (imgRatio > slotRatio) {
+      img.style.width = '100%';
+      img.style.height = 'auto';
+    } else {
+      img.style.width = 'auto';
+      img.style.height = '100%';
+    }
+
+    // Ajuste adicional para os tamanhos específicos 10x15 e 13x18
+    if ((slot.offsetWidth === 300 && slot.offsetHeight === 430) || (slot.offsetWidth === 380 && slot.offsetHeight === 550)) {
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+    } else {
+      img.style.objectFit = 'contain'; // Mantém a proporção original da imagem
+    }
+  }
+  img.style.display = 'block';
+  slot.querySelector('span').style.display = 'none';
+}
+
+function setupDragAndDrop(slot) {
+  slot.addEventListener('dragover', e => {
+    e.preventDefault();
+    slot.classList.add('drag-over');
+  });
+  
+  slot.addEventListener('dragleave', () => {
+    slot.classList.remove('drag-over');
+  });
+  
+  slot.addEventListener('drop', e => {
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files);
+    if (files[0]?.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => loadImageIntoSlot(slot, e.target.result);
+      reader.readAsDataURL(files[0]);
+    }
+  });
+}
+
+function setupHoverEffects(slot) {
+  const hoverContainer = slot.querySelector('.hover-container');
+  
+  slot.addEventListener('mouseenter', () => {
+    if (slot.querySelector('img').src) {
+      hoverContainer.style.display = 'block';
+    }
+  });
+  
+  slot.addEventListener('mouseleave', () => {
+    hoverContainer.style.display = 'none';
+  });
+  
+  slot.querySelector('.remove-btn').addEventListener('click', () => removePhoto(slot));
+  slot.querySelector('.rotate-btn').addEventListener('click', () => rotatePhoto(slot));
+  slot.querySelector('.adjust-btn').addEventListener('click', () => adjustPhoto(slot));
+}
+
+function setupFileInput(slot) {
+  const fileInput = slot.querySelector('.file-input');
+  const clickableSpan = slot.querySelector('.clickable');
+
+  clickableSpan.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        loadImageIntoSlot(slot, e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+function removePhoto(slot) {
+  const img = slot.querySelector('img');
+  img.src = '';
+  img.style.display = 'none';
+  slot.querySelector('span').style.display = 'block';
+  slot.querySelector('.hover-container').style.display = 'none';
+}
+
+function clearPhotos() {
+  document.querySelectorAll('.photo-slot').forEach(removePhoto);
+  updatePhotoCount();
+}
+
+function updatePhotoCount() {
+  const total = layouts[currentLayout]?.length || 0;
+  const used = document.querySelectorAll('.photo-slot img[src]').length;
+  document.getElementById('photoCount').textContent = `Fotos: ${used}/${total}`;
+}
+
+function toggleDropdown() {
+  document.getElementById('saveDropdown').classList.toggle('show');
+}
+
+function handleOutsideClick(event) {
+  if (!event.target.matches('.btn-success')) {
+    document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+      if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+      }
+    });
+  }
+}
+
+function salvarjpg() {
+  html2canvas(document.querySelector('.layout-container')).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'photos.jpg';
+    link.href = canvas.toDataURL('image/jpeg');
+    link.click();
+  });
+}
+
+function rotatePhoto(slot) {
+  const img = slot.querySelector('img');
+  const currentRotation = img.dataset.rotation ? parseInt(img.dataset.rotation) : 0;
+  const newRotation = (currentRotation + 90) % 360;
+  img.style.transform = `rotate(${newRotation}deg)`;
+  img.dataset.rotation = newRotation;
+}
+
+function adjustPhoto(slot) {
+  const img = slot.querySelector('img');
+  const adjustToFrame = img.dataset.adjustToFrame === 'true';
+  img.dataset.adjustToFrame = !adjustToFrame;
+
+  if (adjustToFrame) {
+    // Ajusta a imagem para preencher todo o slot
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+  } else {
+    // Mantém a proporção original da imagem
+    const tempImg = new Image();
+    tempImg.src = img.src;
+    tempImg.onload = () => {
+      const slotRatio = slot.offsetWidth / slot.offsetHeight;
+      const imgRatio = tempImg.width / tempImg.height;
+
+      if (imgRatio > slotRatio) {
+        img.style.width = '100%';
+        img.style.height = 'auto';
+      } else {
+        img.style.width = 'auto';
+        img.style.height = '100%';
+      }
+      img.style.objectFit = 'contain';
+    };
+  }
+}
+
+// Inicializa os eventos após todas as funções terem sido definidas
+initializeEventListeners();
+
+    </script>
+  </body>
+</html>
