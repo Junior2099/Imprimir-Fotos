@@ -318,14 +318,14 @@ document.querySelectorAll('#opcoes .btn').forEach(button => {
 
 const layouts = {
   '30x20': [{ x: 0, y: 0, width: 842, height: 595 }],
-  '20x25': [{ x: 75, y: 45, width: 700, height: 500 }],
+  '20x25': [{ x: 48, y: 0, width: 746, height: 595  }],
   '13x18': [
-    { x: 25, y: 20, width: 380, height: 550 },                   
-    { x: 440, y: 20, width: 380, height: 550 }
+    { x: 25, y: 20, width: 380, height: 539 },                   
+    { x: 440, y: 20, width: 380, height: 539 }
   ],
   '10x15': [
-    { x: 90, y: 80, width: 300, height: 430 },
-    { x: 441, y: 80, width: 300, height: 430 }
+    { x: 90, y: 80, width: 300, height: 436 },
+    { x: 441, y: 80, width: 300, height: 436 }
   ],
   '9x15': [
     { x: 30, y: 20, width: 385, height: 268 },
@@ -448,7 +448,7 @@ function fitImageToSlot(slot, img, tempImg) {
       img.style.height = '100%';
     }
 
-    // Ajuste adicional para os tamanhos específicos 10x15 e 13x18
+    
     if ((slot.offsetWidth === 300 && slot.offsetHeight === 430) || (slot.offsetWidth === 380 && slot.offsetHeight === 550)) {
       img.style.width = '100%';
       img.style.height = '100%';
@@ -577,7 +577,7 @@ function adjustPhoto(slot) {
   img.dataset.adjustToFrame = !adjustToFrame;
 
   if (adjustToFrame) {
-    // Ajusta a imagem para preencher todo o slot
+    
     img.style.width = '100%';
     img.style.height = '100%';
     img.style.objectFit = 'cover';
@@ -601,7 +601,7 @@ function adjustPhoto(slot) {
   }
 }
 
-// Inicializa os eventos após todas as funções terem sido definidas
+
 initializeEventListeners();
 
     </script>
